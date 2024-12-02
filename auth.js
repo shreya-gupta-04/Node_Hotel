@@ -5,7 +5,7 @@ const person=require("./models/person");
 passport.use(new LocalStrategy(async (username,password,done)=>{
     //authentication logic
     try{
-    console.log(username,password);
+    //console.log(username,password);
     const user=await person.findOne({username:username});
     if(!user){
       return done(null,false,{message:"user not found"});
