@@ -30,8 +30,44 @@ const personSchema=new mongoose.Schema({
     salary:{
         type:Number,
         required:true
+    },
+    username:{
+        required:true,
+        type:String,
+    },
+    password:{
+        required:true,
+        type:String,
     }
 });
+
+  personSchema.pre('save',async function (next) {
+    const person=this;
+     // hash the password only if modified
+    if(!person.isModified('password')) return next();
+    try{
+         // hash password generation
+        const salt=await bcrypt.gensalt(10);
+        // override the plain password with hashed password
+        person.password=await bcrypt.hashPassword(person.password,salt);
+    }catch(err){
+       return next(err);
+    }
+  });
+  personSchema.methods.comparePassword=async function (candidatePassword) {
+    try{
+        // use bcrypt to compare password provided with hashed password
+        const isMatch=await bcrypt.compare(candidatePassword,this.password);
+        return isMatch;
+    }catch(err){
+        throw err;
+    }
+  };
+
+  // shreya----> nfhbehuswhwuwjnduue
+  // login-----> gupta
+  // nfhbehuswhwuwjnduue-----> extract salt
+  // salt+ gupta-----> hash -----> ndhufhejdoekwojduwhd
 
 //create person model
 const Person= mongoose.model('Person',personSchema);

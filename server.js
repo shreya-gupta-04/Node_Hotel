@@ -46,24 +46,41 @@
 
 const express = require('express');
 const app = express();
-const db= require('./db');
+const connectDB=require('./db');  
 require('dotenv').config();
+const passport = require('./auth');
 
-const bodyParser=require('body-parser');
+
+//connect to databas
+connectDB().then(()=>{
+  console.log('database connected');
+  
+});
+const bodyParser=require('body-parser');//not needed
 app.use(bodyParser.json());//req.body
 
+//middleware Function
+const logRequest=(req,res,next)=>{
+    console.log(`[${new Date().toLocaleString()}] Request to: ${req.originalUrl}`);
+    next();
+}
 
-app.get('/', function (req, res) {
+app.use(logRequest);
+
+
+app.use(passport.initialize());
+const localauthmiddleware=passport.authenticate('local',{session:false});
+app.get('/',localauthmiddleware,function (req, res) {
   res.send('Welcome to my hotel, How can i help you?')
 });
 
 //import the router file
 const personroute= require('./routes/personroutes');
 const menuroute=require('./routes/menuroutes');
-//use route
-app.use('/person',personroute);
-app.use('/menu',menuroute);
 
+//use route
+app.use('/person',localauthmiddleware,personroute);
+app.use('/menu',menuroute);
 const PORT= process.env.PORT || 3000;
 
 app.listen(PORT,()=>{
