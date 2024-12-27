@@ -42,7 +42,7 @@ const personSchema=new mongoose.Schema({
     }
 });
 
-  personSchema.pre('save',async function (next) {
+  personSchema.pre('save',async function (next) {//next-> db mein save krdo
     const person=this;
      // hash the password only if modified
     if(!person.isModified('password')) return next();

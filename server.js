@@ -1,49 +1,3 @@
-// function callback()
-// {
-//     console.log('server is running');
-
-// }
-
-// const add=function(a,b,callback)
-// {
-//     var r=a+b;
-//     console.log(r);
-//     callback();
-// }
-// add(4,8,callback);
-
-// var fs=require('fs');
-// var os= require('os');
-
-// var user= os.userInfo();
-// console.log(user.username);
-
-// fs.appendFile('greeting.txt', 'Hi ' + user.username + '!\n',()=>{
-//     console.log('file is created');
-// });
-
-// console.log(fs);
-// var _=require('lodash');
-// const notes= require('./notes');
-// console.log('server file is available');
-
-// var age=notes.age;
-// console.log(age);
-// console.log(notes.addnum(age+18,10));
-
-
-// var data=["person","person",1,2,1,2,'name','age','2'];
-// var filter=_.uniq(data);
-
-// console.log(filter);
-
-// console.log(_.isString(true));
-
-// const jsonstring='{"name":"john","age":30}';
-// const jsonobj= JSON.parse(jsonstring);
-// console.log(jsonobj.name);
-
-
 const express = require('express');
 const app = express();
 const connectDB=require('./db');  
@@ -58,6 +12,7 @@ connectDB().then(()=>{
 });
 const bodyParser=require('body-parser');//not needed
 app.use(bodyParser.json());//req.body
+const PORT= process.env.PORT || 3000;
 
 //middleware Function
 const logRequest=(req,res,next)=>{
@@ -79,9 +34,9 @@ const personroute= require('./routes/personroutes');
 const menuroute=require('./routes/menuroutes');
 
 //use route
-app.use('/person',personroute);
+app.use('/person',localauthmiddleware,personroute);
 app.use('/menu',menuroute);
-const PORT= process.env.PORT || 3000;
+
 
 app.listen(PORT,()=>{
   console.log('listening to port 3000');
