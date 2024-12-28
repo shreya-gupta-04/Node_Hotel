@@ -34,7 +34,7 @@ const personroute= require('./routes/personroutes');
 const menuroute=require('./routes/menuroutes');
 
 //use route
-app.use('/person',localauthmiddleware,personroute);
+app.use('/person',personroute);
 app.use('/menu',menuroute);
 
 
